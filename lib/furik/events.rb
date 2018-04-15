@@ -23,15 +23,12 @@ module Furik
     def ignore_event?(event)
       ignore_private_repos = @options[:ignore_private_repos]
       
+      return false if event.public
       return false unless ignore_private_repos
 
-      unless event.public
-        patterns = ignore_private_repos.fetch('whitelist', [])
-        
-        return !patterns.any?{|p| event.repo.name =~ /#{p}/ }
-      end
-  
-      return true
+      patterns = ignore_private_repos.fetch('whitelist', [])
+      
+      return !patterns.any?{|p| event.repo.name =~ /#{p}/ }
     end
 
     def aggressives
